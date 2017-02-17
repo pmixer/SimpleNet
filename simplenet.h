@@ -44,7 +44,7 @@ void forward(struct SimpleNet *net, double *input);
 
 void clear(struct SimpleNet *net);
 void reset(struct SimpleNet *net);
-void backward(struct SimpleNet *net, void(*costFuncDet)(struct Vector *, struct Vector *, int), int);
+void backward(struct SimpleNet *net, int, void(*costFuncDet)(struct Vector *, struct Vector *, int));
 void update(struct SimpleNet *net, double stepFactor);
 
 // Activation functions

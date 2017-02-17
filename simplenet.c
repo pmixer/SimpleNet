@@ -68,25 +68,24 @@ void clear(struct SimpleNet *net) {
 }
 
 // det is derivative vector passed from cost function
-// void backward(struct SimpleNet *net, void(*costFunDet)(struct Vector *output, struct Vector *det, int label), int label) {
-//   int li = net->hiddenLayerNum-1;//last layer index
-//   // set derivative function to softmax layer det vector
-//   costFunDet(net->output, &(net->tls[li].det), label);
-//
-//   for (; li > 0; li++) {
-//     // consequence, softmaxBack is same as acFunBack using sigmoid
-//     softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
-//     // To update weight det and bias det
-//     vmv2m();// vector multiple vector to matrix
-//     vcpv();// vector copy another vector's value
-//     vmv(&(net->fls[li].det), &(net->fls[li].weight) ,&(net->tls[li-1].det), true);
-//   }
-//   // last hidden layer
-//   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
-//   // To update weight det and bias det
-//   vmv2m();
-//   vcpv();
-// }
+void backward(struct SimpleNet *net, int label, void(*costFunDet)(struct Vector *output, struct Vector *det, int label)) {
+  int li = net->hiddenLayerNum-1;//last layer index
+  // set derivative function to softmax layer det vector
+  costFunDet(net->output, &(net->tls[li].det), label);
+
+  for (; li > 0; li--) {
+    // consequently, softmaxBack is same as acFunBack using sigmoid
+    softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
+    // To update weight det and bias det
+    vvm();// vector multiple vector to matrix, for weight matrix det
+    vcpv();// vector copy another vector's value, for bias det
+    vmv(&(net->fls[li].det), &(net->fls[li].weight) ,&(net->tls[li-1].det), true);
+  }
+  // last hidden layer
+  softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
+  vvm();
+  vcpv();
+}
 
 // update using a step factor
 void update(struct SimpleNet *net, double sf) {

@@ -47,6 +47,12 @@ void vplusv(struct Vector *vec, struct Vector *delta, double factor) {
 	}
 }
 
+void vcpv(struct Vector *des, struct Vector *src) {
+	for (int i = 0; i < des->len; i++) {
+		des->data[i] = src->data[i];
+	}
+}
+
 void mplusm(struct Mat *m, struct Mat *dm, double factor) {
 	for (int i = 0; i < m->colNum; i++) {
 		for (int j = 0; j < m->rowNum; j++) {
@@ -90,4 +96,12 @@ void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mt
 	        out_vec->data[counter1] = tmp;
 	    }
 		}
+}
+
+void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat) {
+	for (int i = 0; i < lvec->len; i++) {
+		for (int j = 0; j < rvec->len; j++) {
+			mat->data[i][j] = lvec->data[i]*rvec->data[j];
+		}
+	}
 }
