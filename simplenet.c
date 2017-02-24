@@ -77,14 +77,14 @@ void backward(struct SimpleNet *net, int label, void(*costFunDet)(struct Vector 
     // consequently, softmaxBack is same as acFunBack using sigmoid
     softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
     // To update weight det and bias det
-    vvm();// vector multiple vector to matrix, for weight matrix det
-    vcpv();// vector copy another vector's value, for bias det
+    vvm(&(net->tls[li-1].res), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
+    vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
     vmv(&(net->fls[li].det), &(net->fls[li].weight) ,&(net->tls[li-1].det), true);
   }
-  // last hidden layer
+  // last hidden layer, now li  = 0
   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
-  vvm();
-  vcpv();
+  vvm(&(net->tls[li-1].res), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
+  vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
 }
 
 // update using a step factor
