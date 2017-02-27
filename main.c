@@ -4,11 +4,22 @@
 //with different kind of layers, deveritive matrix is essential to be included into it
 
 // It's better to take hidden layers as an array of matrixs begin modifying codes - 2015-9-5
+//#include "stdafx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 // #include <unistd.h>
 #include "simplenet.h"
+
+void quadCostFunc(struct Vector *output, struct Vector *det, int label) {
+  for (int i = 0; i < output->len; i++) {
+    if (i == label) {
+      det->data[i] = output->data[i] - 1;
+    }else {
+      det->data[i] = output->data[i];
+    }
+  }
+}
 
 int main()
 {
@@ -26,18 +37,22 @@ int main()
     layerSizes[0] = 724, layerSizes[1] = 100, layerSizes[2] = 10;
     initNetWork(&myNet, layerNum, layerSizes);
 
-    // Test forward pass of the network
-    forward(&myNet, trainingData[0]+1);
-    int res = selectFromOutput(&myNet);
-    printf("label: %lf, res: %d\n", trainingData[0][0], res);
-    //TestForwardPass(trainingData, minTestPicNum, &myNet);
-
     // Params for learning, values below are kind of hand-tuned with no math directions which need improving
     double stepFactor = 0.003, minorDiff = 0.0001; //Set the parameter for M(i,j) = M(i,j) - stepParam*(Partial Derivative)
 
-    int maxIteration = 50; //As they always set it to 50 in Currennt
+    int maxIteration = 500; //As they always set it to 50 in Currennt
 
     // Training by backprpagation
+    for (int i = 0; i < maxIteration; i++) {
+      // Test forward pass of the network
+      forward(&myNet, trainingData[0]+1);
+      int res = selectFromOutput(&myNet);
+      printf("label: %lf, res: %d\n", trainingData[0][0], res);
+      // Test backward
+      clear(&myNet);
+      backward(&myNet, trainingData[0][0], &quadCostFunc);
+      update(&myNet, stepFactor);
+    }
     //printf("\n%lf\n",(double)bp(&myNet, trainingData, minTestPicNum, stepFactor));
     return 0;
 }

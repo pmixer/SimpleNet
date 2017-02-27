@@ -83,7 +83,7 @@ void backward(struct SimpleNet *net, int label, void(*costFunDet)(struct Vector 
   }
   // last hidden layer, now li  = 0
   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
-  vvm(&(net->tls[li-1].res), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
+  vvm(&(net->inputlayer.input), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
   vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
 }
 

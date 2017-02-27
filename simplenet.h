@@ -43,7 +43,7 @@ void forward(struct SimpleNet *net, double *input);
 // and if SGD required, just use accumulative det array and add det matrix
 
 void clear(struct SimpleNet *net);
-void reset(struct SimpleNet *net);
+//void reset(struct SimpleNet *net);
 void backward(struct SimpleNet *net, int, void(*costFuncDet)(struct Vector *, struct Vector *, int));
 void update(struct SimpleNet *net, double stepFactor);
 

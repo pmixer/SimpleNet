@@ -34,8 +34,8 @@ void clearVector(struct Vector *vec) {
 }
 
 void clearMat(struct Mat *mat) {
-	for (int i = 0; i < mat->colNum; i++) {
-		for (int j = 0; j < mat->rowNum; j++) {
+	for (int i = 0; i < mat->rowNum; i++) {
+		for (int j = 0; j < mat->colNum; j++) {
 			mat->data[i][j] = 0;
 		}
 	}
@@ -54,8 +54,8 @@ void vcpv(struct Vector *des, struct Vector *src) {
 }
 
 void mplusm(struct Mat *m, struct Mat *dm, double factor) {
-	for (int i = 0; i < m->colNum; i++) {
-		for (int j = 0; j < m->rowNum; j++) {
+	for (int i = 0; i < m->rowNum; i++) {
+		for (int j = 0; j < m->colNum; j++) {
 			m->data[i][j] += factor*dm->data[i][j];
 		}
 	}
