@@ -7,8 +7,9 @@
 void initNetWork(struct SimpleNet *net, int layerNum, int *layerSize)
 {
   int inputSize = layerSize[0];
-  net->inputlayer.input.len = inputSize;
-  //net->inputlayer.input->data = getVecSpace(inputSize);
+  net->inputLayer.input.len = inputSize;
+  net->inputLayer.input.data = getVecSpace(inputSize);
+  //net->inputLayer.input->data = getVecSpace(inputSize);
 
   int hiddenLayerNum = layerNum - 1;// Number of hidden layers
   net->hiddenLayerNum = hiddenLayerNum;
@@ -43,8 +44,14 @@ void initNetWork(struct SimpleNet *net, int layerNum, int *layerSize)
 
 //FowardPass with sigmoid included
 void forward(struct SimpleNet *net, double *input) {
-  net->inputlayer.input.data = input;
-  vmv(&(net->inputlayer.input), &(net->fls[0].weight), &(net->fls[0].res), false);
+  net->inputLayer.input.data = input;
+  //dirty fixation
+  // for (int i = 0; i < net->inputLayer.input.len; i++) {
+  //   net->inputLayer.input.data[i] = input[i];
+  // }
+  //printVector(&(net->inputLayer.input));
+
+  vmv(&(net->inputLayer.input), &(net->fls[0].weight), &(net->fls[0].res), false);
   vplusv(&(net->fls[0].res), &(net->fls[0].bias), 1.0);
 
   // Before softmax
@@ -78,12 +85,13 @@ void backward(struct SimpleNet *net, int label, void(*costFunDet)(struct Vector 
     softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
     // To update weight det and bias det
     vvm(&(net->tls[li-1].res), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
-    vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
+    //vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
+    vplusv(&(net->fls[li].biasDet), &(net->fls[li].det), 1.0);
     vmv(&(net->fls[li].det), &(net->fls[li].weight) ,&(net->tls[li-1].det), true);
   }
   // last hidden layer, now li  = 0
   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
-  vvm(&(net->inputlayer.input), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
+  vvm(&(net->inputLayer.input), &(net->fls[li].det), &(net->fls[li].weightDet));// vector multiple vector to matrix, for weight matrix det
   vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
 }
 
@@ -146,14 +154,14 @@ int selectFirstBiggest(struct SimpleNet *net)
 {
     int counter2; // counter2 indicates the code is pasted from another episode
     int maxAt = 0;
-    double maxAmongOutput = net->output->data[0];
+    double maxAmongOutput = net->tls[1].res.data[0];
     printf("\nSelecting from: ");
-    for (counter2 = 0; counter2 < net->output->len; counter2++)
+    for (counter2 = 0; counter2 < net->tls[1].res.len; counter2++)
     {
-        printf("%lf ", net->output->data[counter2]);
-        if (net->output->data[counter2] > maxAmongOutput)
+        printf("%lf ", net->tls[1].res.data[counter2]);
+        if (net->tls[1].res.data[counter2] > maxAmongOutput)
         {
-            maxAmongOutput = net->output->data[counter2];
+            maxAmongOutput = net->tls[1].res.data[counter2];
             maxAt = counter2;//Or just use maxAt, delete maxAmongOutput
         }
     }

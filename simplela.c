@@ -1,5 +1,6 @@
 #include "simplela.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 double * getVecSpace(int size) {
 	double *vec = (double *)malloc(sizeof(double)*size);
@@ -20,7 +21,7 @@ double ** getMatSpace(int inputLayerSize, int outputLayerSize)
         {
             //Initialization is very important process and I still haven't released the power of statistics
             // mat[rowIndex][colIndex] = ((random() - RAND_MAX/2)*0.01)/(6*RAND_MAX);
-						mat[rowIndex][colIndex] = 0;
+						mat[rowIndex][colIndex] = 0.00001*(double)rand()/(double)RAND_MAX;
             // printf("Got %lf ", mat[rowIndex][colIndex]);
         }
     }
@@ -101,7 +102,7 @@ void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mt
 void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat) {
 	for (int i = 0; i < lvec->len; i++) {
 		for (int j = 0; j < rvec->len; j++) {
-			mat->data[i][j] = lvec->data[i]*rvec->data[j];
+			mat->data[i][j] += lvec->data[i]*rvec->data[j];
 		}
 	}
 }

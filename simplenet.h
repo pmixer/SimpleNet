@@ -26,7 +26,7 @@ struct TransformLayer {
 struct SimpleNet
 {
 	int hiddenLayerNum;
-	struct InputLayer inputlayer;
+	struct InputLayer inputLayer;
 	struct ConnectionLayer *fls;// fully connection layers
 	struct TransformLayer *tls;// transformation layers
 	struct Vector *output;

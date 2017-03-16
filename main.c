@@ -38,22 +38,31 @@ int main()
     initNetWork(&myNet, layerNum, layerSizes);
 
     // Params for learning, values below are kind of hand-tuned with no math directions which need improving
-    double stepFactor = 0.00001, minorDiff = 0.0001; //Set the parameter for M(i,j) = M(i,j) - stepParam*(Partial Derivative)
+    double stepFactor = 0.000000001, minorDiff = 0.000001; //Set the parameter for M(i,j) = M(i,j) - stepParam*(Partial Derivative)
 
-    int maxIteration = 10000; //As they always set it to 50 in Currennt
+    int maxIteration = 100; //Epoch num, as they always set it to 50 in Currennt
 
     // Training by backprpagation
     for (int i = 0; i < maxIteration; i++) {
-      int di = i%minTestPicNum; //data index
-      // Test forward pass of the network
-      forward(&myNet, trainingData[di]+1);
-      int res = selectFromOutput(&myNet);
-      printf("label: %lf, res: %d\n", trainingData[di][0], res);
-      // Test backward
       clear(&myNet);
-      backward(&myNet, trainingData[di][0], &quadCostFunc);
+      for (int j = 0; j < minTestPicNum; j++) {
+        int di = j; //data index
+        // Test forward pass of the network
+        forward(&myNet, trainingData[di]+1);
+        // Test backward
+        backward(&myNet, trainingData[di][0], &quadCostFunc);
+      }
       update(&myNet, stepFactor);
     }
+
+    for (int j = 0; j < minTestPicNum; j++) {
+      forward(&myNet, trainingData[j]+1);
+      printNet(&myNet);
+      int res = selectFromOutput(&myNet);
+      printf("label: %lf, res: %d\n", trainingData[j][0], res);
+    }
+
+
     //printf("\n%lf\n",(double)bp(&myNet, trainingData, minTestPicNum, stepFactor));
     return 0;
 }

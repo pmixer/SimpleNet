@@ -6,6 +6,9 @@
 // Print current path
 void printPath();
 
+// Print inner state of network
+void printNet(struct SimpleNet *net);
+
 // Data type test
 void TestLongDouble();
 void testDL2LD(); // Test if double and double is the same as I mix the use of them together
