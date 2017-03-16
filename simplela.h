@@ -28,4 +28,5 @@ void vcpv(struct Vector *des, struct Vector *src);
 void mplusm(struct Mat *m, struct Mat *dm, double factor);
 void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mtrans);
 void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat);
+void printVector(struct Vector *vec);
 #endif

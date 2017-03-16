@@ -158,5 +158,5 @@ int selectFirstBiggest(struct SimpleNet *net)
         }
     }
     printf("\n");
-    return 0;
+    return maxAt;
 }

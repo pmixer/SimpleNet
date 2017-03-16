@@ -105,3 +105,11 @@ void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat) {
 		}
 	}
 }
+
+void printVector(struct Vector *vec) {
+	printf("Vector: ");
+	for (int i = 0; i < vec->len; i++) {
+		printf("%lf ", vec->data[i]);
+	}
+	printf("\n");
+}
