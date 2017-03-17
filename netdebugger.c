@@ -10,7 +10,7 @@ void printPath()
     puts(path);
 }
 
-void printNet(struct SimpleNet *net) {
+void printNet(SimpleNet *net) {
   for (int i = 0; i < net->hiddenLayerNum; i++) {
     printf("Fully Connection Layer %d res:\n", i);
     printVector(&net->fls[i].res);
@@ -30,7 +30,7 @@ void printNet(struct SimpleNet *net) {
   }
 }
 
-void writeMat(struct Mat *m, char filename[]) {
+void writeMat(Mat *m, char filename[]) {
   FILE *f = fopen(filename, "w");//strcat(filename, ".csv")
   for (int i = 0; i < m->rowNum; i++) {
     if (m->colNum > 0) {
@@ -58,7 +58,7 @@ void writeMat(struct Mat *m, char filename[]) {
 //  }
 //
 //
-// void TestForwardPass(double **data, int dataRowNum, struct SimpleNet *net)
+// void TestForwardPass(double **data, int dataRowNum, SimpleNet *net)
 // {
 //
 //     //Test a typical forward pass of the network and get ratio of right/all on training set

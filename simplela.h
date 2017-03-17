@@ -5,28 +5,28 @@
 #ifndef SIMPLELA
 #define SIMPLELA
 #include <stdbool.h>
-struct Mat
+
+typedef struct Vector
+{
+    double *data;
+    int len;
+} Vector;
+
+typedef struct Mat
 {
     double **data;
     int rowNum;
     int colNum;
-};
-
-// Did not distinguish column vector and row vector
-struct Vector
-{
-    double *data;
-    int len;
-};
+} Mat;
 
 double * getVecSpace(int size);
 double ** getMatSpace(int inputLayerSize, int outputLayerSize);
-void clearVector(struct Vector *vec);
-void clearMat(struct Mat *mat);
-void vplusv(struct Vector *vec, struct Vector *delta, double factor);
-void vcpv(struct Vector *des, struct Vector *src);
-void mplusm(struct Mat *m, struct Mat *dm, double factor);
-void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mtrans);
-void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat, double sf);
-void printVector(struct Vector *vec);
+void clearVector(Vector *vec);
+void clearMat(Mat *mat);
+void vplusv(Vector *vec, Vector *delta, double factor);
+void vcpv(Vector *des, Vector *src);
+void mplusm(Mat *m, Mat *dm, double factor);
+void vmv(Vector *in_vec, Mat *mat, Vector *out_vec, bool mtrans);
+void vvm(Vector *lvec, Vector *rvec, Mat *mat, double sf);
+void printVector(Vector *vec);
 #endif

@@ -30,13 +30,13 @@ double ** getMatSpace(int inputLayerSize, int outputLayerSize)
     return mat;
 }
 
-void clearVector(struct Vector *vec) {
+void clearVector(Vector *vec) {
 	for (int i = 0; i < vec->len; i++) {
 		vec->data[i] = 0;
 	}
 }
 
-void clearMat(struct Mat *mat) {
+void clearMat(Mat *mat) {
 	for (int i = 0; i < mat->rowNum; i++) {
 		for (int j = 0; j < mat->colNum; j++) {
 			mat->data[i][j] = 0;
@@ -44,19 +44,19 @@ void clearMat(struct Mat *mat) {
 	}
 }
 
-void vplusv(struct Vector *vec, struct Vector *delta, double factor) {
+void vplusv(Vector *vec, Vector *delta, double factor) {
 	for (int i = 0; i < vec->len; i++) {
 		vec->data[i] += factor*delta->data[i];
 	}
 }
 
-void vcpv(struct Vector *des, struct Vector *src) {
+void vcpv(Vector *des, Vector *src) {
 	for (int i = 0; i < des->len; i++) {
 		des->data[i] = src->data[i];
 	}
 }
 
-void mplusm(struct Mat *m, struct Mat *dm, double factor) {
+void mplusm(Mat *m, Mat *dm, double factor) {
 	for (int i = 0; i < m->rowNum; i++) {
 		for (int j = 0; j < m->colNum; j++) {
 			m->data[i][j] += factor*dm->data[i][j];
@@ -64,7 +64,7 @@ void mplusm(struct Mat *m, struct Mat *dm, double factor) {
 	}
 }
 
-void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mtrans)
+void vmv(Vector *in_vec, Mat *mat, Vector *out_vec, bool mtrans)
 {
     // Row num is equal to v1 length and column num is equal to v2 length of the given matrix
 	// if ((in_vec->len != mat->rowNum)||(out_vec->len != mat->colNum))
@@ -101,7 +101,7 @@ void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mt
 		}
 }
 
-void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat, double sf) {
+void vvm(Vector *lvec, Vector *rvec, Mat *mat, double sf) {
 	for (int i = 0; i < lvec->len; i++) {
 		for (int j = 0; j < rvec->len; j++) {
 			// printf("Before: %lf ", lvec->data[i]);
@@ -111,7 +111,7 @@ void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat, double sf) {
 	}
 }
 
-void printVector(struct Vector *vec) {
+void printVector(Vector *vec) {
 	printf("Vector: ");
 	for (int i = 0; i < vec->len; i++) {
 		printf("%lf ", vec->data[i]);

@@ -35,13 +35,7 @@ double ** getData(char *path, int rowNum, int colNum) //bool isTrainingData)
 
             fscanf(dataFile,"%d%c",&temp,&deliminator);
             data[rowIndex][colIndex] = temp;
-            /*
-            if (rowIndex == 41999)
-                printf("%d ",data[rowIndex][colIndex]);
-            */
-            //fgetc(dataFile);
         }
-        //printf("%d ",rowIndex);
     }
     fclose(dataFile);
     return data;

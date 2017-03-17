@@ -5,7 +5,7 @@
 #include "simplenet.h"
 #include "simplela.h"
 
-void initNetWork(struct SimpleNet *net, int layerNum, int *layerSize)
+void initNetWork(SimpleNet *net, int layerNum, int *layerSize)
 {
   int inputSize = layerSize[0];
   net->inputLayer.input.len = inputSize;
@@ -14,8 +14,8 @@ void initNetWork(struct SimpleNet *net, int layerNum, int *layerSize)
 
   int hiddenLayerNum = layerNum - 1;// Number of hidden layers
   net->hiddenLayerNum = hiddenLayerNum;
-  net->fls = (struct ConnectionLayer *)malloc(sizeof(struct ConnectionLayer)*hiddenLayerNum);
-  net->tls = (struct TransformLayer *)malloc(sizeof(struct TransformLayer)*hiddenLayerNum);
+  net->fls = (ConnectionLayer *)malloc(sizeof(ConnectionLayer)*hiddenLayerNum);
+  net->tls = (TransformLayer *)malloc(sizeof(TransformLayer)*hiddenLayerNum);
 
   // Get space for vectors and matrices
   for (int i = 0; i < hiddenLayerNum; i++) {
@@ -44,7 +44,7 @@ void initNetWork(struct SimpleNet *net, int layerNum, int *layerSize)
 }
 
 //FowardPass with sigmoid included
-void forward(struct SimpleNet *net, double *input) {
+void forward(SimpleNet *net, double *input) {
   net->inputLayer.input.data = input;
 
   vmv(&(net->inputLayer.input), &(net->fls[0].weight), &(net->fls[0].res), false);
@@ -61,15 +61,9 @@ void forward(struct SimpleNet *net, double *input) {
   int lli = net->hiddenLayerNum-1;// last layer index
 
   softmax(&net->fls[lli].res, &net->tls[lli].res);
-
-  int li = net->hiddenLayerNum-1;//last layer index
-  printVector(&(net->tls[li].det));
-  printVector(&(net->tls[li].res));
-  getchar();
-
 }
 
-void clear(struct SimpleNet *net) {
+void clear(SimpleNet *net) {
   for (int i = 0; i < net->hiddenLayerNum; i++) {
     clearVector(&(net->fls[i].biasDet));
     clearMat(&(net->fls[i].weightDet));
@@ -78,11 +72,12 @@ void clear(struct SimpleNet *net) {
 }
 
 // det is derivative vector passed from cost function
-void backward(struct SimpleNet *net, int label, void(*costFunDet)(struct Vector *output, struct Vector *det, int label), double sf) {
+void backward(SimpleNet *net, int label, void(*costFunDet)(Vector *output, Vector *det, int label), double sf) {
   int li = net->hiddenLayerNum-1;//last layer index
 
   // set derivative function to softmax layer det vector
   costFunDet(net->output, &(net->tls[li].det), label);
+
   for (; li > 0; li--) {
     // consequently, softmaxBack is same as acFunBack using sigmoid
     softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
@@ -98,17 +93,23 @@ void backward(struct SimpleNet *net, int label, void(*costFunDet)(struct Vector 
   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
   vvm(&(net->inputLayer.input), &(net->fls[li].det), &(net->fls[li].weightDet), sf);// vector multiple vector to matrix, for weight matrix det
   vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
+
+  writeMat(&(net->fls[li].weightDet), "weightDet");
+    printVector(&(net->fls[li].det));
+    printVector(&(net->fls[li].res));
+    getchar();
+
 }
 
 // update using a step factor
-void update(struct SimpleNet *net) {
+void update(SimpleNet *net) {
   for (int i = 0; i < net->hiddenLayerNum; i++) {
     mplusm(&(net->fls[i].weight), &(net->fls[i].weightDet), 1.0);
     vplusv(&(net->fls[i].bias), &(net->fls[i].biasDet), 1.0);
   }
 }
 
-void softmax(struct Vector *input, struct Vector *output) {
+void softmax(Vector *input, Vector *output) {
   double sum = 0;
   for (int i = 0; i < input->len; i++) {
     double tmp = exp(input->data[i]);
@@ -121,13 +122,13 @@ void softmax(struct Vector *input, struct Vector *output) {
   }
 }
 
-void softmaxBack(struct Vector *inputdet, struct Vector *inputres, struct Vector *det) {
+void softmaxBack(Vector *inputdet, Vector *inputres, Vector *det) {
   for (int i = 0; i < inputdet->len; i++) {
     det->data[i] += inputdet->data[i]*sigmoidDet(inputres->data[i]);
   }
 }
 
-void acFun(struct Vector *act, struct Vector *output)
+void acFun(Vector *act, Vector *output)
 {
     // Activation part could be splitted into a more powerful module to deal with many kinds of forward pass and bp in the future
     for (int ctr = 0; ctr < act->len; ctr++)
@@ -136,7 +137,7 @@ void acFun(struct Vector *act, struct Vector *output)
     }
 }
 
-void acFunBack(struct Vector *inputdet, struct Vector *inputres, struct Vector *det) {
+void acFunBack(Vector *inputdet, Vector *inputres, Vector *det) {
   softmaxBack(inputdet, inputres, det);
 }
 
@@ -150,12 +151,12 @@ double sigmoidDet(double num)
     return num*(1-num);
 }
 
-int selectFromOutput(struct SimpleNet * net)
+int selectFromOutput(SimpleNet * net)
 {
     return selectFirstBiggest(net);
 }
 
-int selectFirstBiggest(struct SimpleNet *net)
+int selectFirstBiggest(SimpleNet *net)
 {
     int counter2; // counter2 indicates the code is pasted from another episode
     int maxAt = 0;

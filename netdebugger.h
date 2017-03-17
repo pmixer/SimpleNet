@@ -1,22 +1,23 @@
 #ifndef NET_DEBUGGER
 #define NET_DEBUGGER
-
+#include "simplela.h"
+#include "simplenet.h"
 // Testing units to get rid of confusion when coding
 
 // Print current path
 void printPath();
 
-void writeMat(struct Mat* m, char filename[]);
+void writeMat(Mat* m, char filename[]);
 
 // Print inner state of network
-void printNet(struct SimpleNet *net);
+void printNet(SimpleNet *net);
 
 // Data type test
 void TestLongDouble();
 void testDL2LD(); // Test if double and double is the same as I mix the use of them together
 
 // Forward pass test
-void TestForwardPass(double **data, int dataRowNum, struct SimpleNet *net);
+void TestForwardPass(double **data, int dataRowNum, SimpleNet *net);
 
 // Matrix manipluation test
 void testvMv();

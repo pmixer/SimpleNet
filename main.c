@@ -11,7 +11,7 @@
 // #include <unistd.h>
 #include "simplenet.h"
 
-void quadCostFunc(struct Vector *output, struct Vector *det, int label) {
+void quadCostFunc(Vector *output, Vector *det, int label) {
   for (int i = 0; i < output->len; i++) {
     if (i == label) {
       det->data[i] = output->data[i] - 1;
@@ -24,33 +24,23 @@ void quadCostFunc(struct Vector *output, struct Vector *det, int label) {
 void mnistTest() {
   // Prepare data
   double **trainingData, **testData;
-
   int minTestPicNum = 100;
   readInMiniData(&trainingData, minTestPicNum);
 
   // Init the network
-  struct SimpleNet myNet;
-  // int inputSize = 724;
-  // int layerNum = 3;
-  // int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
-  // layerSizes[0] = 724, layerSizes[1] = 100, layerSizes[2] = 10;
-
+  SimpleNet myNet;
   int layerNum = 2;
   int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
   layerSizes[0] = 724, layerSizes[1] = 10;
-
   initNetWork(&myNet, layerNum, layerSizes);
 
   // Params for learning, values below are kind of hand-tuned with no math directions which need improving
-  double stepFactor = 0.000000001, minorDiff = 0.000001; //Set the parameter for M(i,j) = M(i,j) - stepParam*(Partial Derivative)
-
+  double stepFactor = 0.1;
   int maxIteration = 50; //Epoch num, as they always set it to 50 in Currennt
-
 
   // Training by backprpagation
   for (int i = 0; i < maxIteration; i++) {
     clear(&myNet);
-
     for (int j = 0; j < minTestPicNum; j++) {
       int di = j; //data index
       // Test forward pass of the network
@@ -61,28 +51,25 @@ void mnistTest() {
     update(&myNet);
   }
 
+  // Debug by writing net weights
+  //  writeMat(&(myNet.fls[0].weightDet), "fc1det");
 
-  writeMat(&(myNet.fls[0].weightDet), "fc1det");
-  writeMat(&(myNet.fls[0].weight), "fc1weight");
+  // Check nan error
+  // printNet(&myNet);
 
+ // Test overfitting result
   int right = 0;
   for (int j = 0; j < minTestPicNum; j++) {
     forward(&myNet, trainingData[j]+1);
-    //printNet(&myNet);
     int res = selectFromOutput(&myNet);
     right += (trainingData[j][0] == (double)res);
     printf("label: %lf, res: %d\n", trainingData[j][0], res);
   }
   printf("Accuracy: %lf\n", right/(double)minTestPicNum);
 
-
-  //printf("\n%lf\n",(double)bp(&myNet, trainingData, minTestPicNum, stepFactor));
 }
-
 int main()
 {
-  // int epsilon = 0.12;
-  //   printf("%lf", (double)rand()/(double)RAND_MAX);
   mnistTest();
-    return 0;
+  return 0;
 }
