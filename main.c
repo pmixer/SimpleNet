@@ -21,48 +21,68 @@ void quadCostFunc(struct Vector *output, struct Vector *det, int label) {
   }
 }
 
-int main()
-{
-    // Prepare data
-    double **trainingData, **testData;
+void mnistTest() {
+  // Prepare data
+  double **trainingData, **testData;
 
-    int minTestPicNum = 100;
-    readInMiniData(&trainingData, minTestPicNum);
+  int minTestPicNum = 100;
+  readInMiniData(&trainingData, minTestPicNum);
 
-    // Init the network
-    struct SimpleNet myNet;
-    // int inputSize = 724;
-    int layerNum = 3;
-    int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
-    layerSizes[0] = 724, layerSizes[1] = 100, layerSizes[2] = 10;
-    initNetWork(&myNet, layerNum, layerSizes);
+  // Init the network
+  struct SimpleNet myNet;
+  // int inputSize = 724;
+  // int layerNum = 3;
+  // int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
+  // layerSizes[0] = 724, layerSizes[1] = 100, layerSizes[2] = 10;
 
-    // Params for learning, values below are kind of hand-tuned with no math directions which need improving
-    double stepFactor = 0.000000001, minorDiff = 0.000001; //Set the parameter for M(i,j) = M(i,j) - stepParam*(Partial Derivative)
+  int layerNum = 2;
+  int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
+  layerSizes[0] = 724, layerSizes[1] = 10;
 
-    int maxIteration = 100; //Epoch num, as they always set it to 50 in Currennt
+  initNetWork(&myNet, layerNum, layerSizes);
 
-    // Training by backprpagation
-    for (int i = 0; i < maxIteration; i++) {
-      clear(&myNet);
-      for (int j = 0; j < minTestPicNum; j++) {
-        int di = j; //data index
-        // Test forward pass of the network
-        forward(&myNet, trainingData[di]+1);
-        // Test backward
-        backward(&myNet, trainingData[di][0], &quadCostFunc);
-      }
-      update(&myNet, stepFactor);
-    }
+  // Params for learning, values below are kind of hand-tuned with no math directions which need improving
+  double stepFactor = 0.000000001, minorDiff = 0.000001; //Set the parameter for M(i,j) = M(i,j) - stepParam*(Partial Derivative)
+
+  int maxIteration = 50; //Epoch num, as they always set it to 50 in Currennt
+
+
+  // Training by backprpagation
+  for (int i = 0; i < maxIteration; i++) {
+    clear(&myNet);
 
     for (int j = 0; j < minTestPicNum; j++) {
-      forward(&myNet, trainingData[j]+1);
-      printNet(&myNet);
-      int res = selectFromOutput(&myNet);
-      printf("label: %lf, res: %d\n", trainingData[j][0], res);
+      int di = j; //data index
+      // Test forward pass of the network
+      forward(&myNet, trainingData[di]+1);
+      // Test backward
+      backward(&myNet, trainingData[di][0], &quadCostFunc, stepFactor);
     }
+    update(&myNet);
+  }
 
 
-    //printf("\n%lf\n",(double)bp(&myNet, trainingData, minTestPicNum, stepFactor));
+  writeMat(&(myNet.fls[0].weightDet), "fc1det");
+  writeMat(&(myNet.fls[0].weight), "fc1weight");
+
+  int right = 0;
+  for (int j = 0; j < minTestPicNum; j++) {
+    forward(&myNet, trainingData[j]+1);
+    //printNet(&myNet);
+    int res = selectFromOutput(&myNet);
+    right += (trainingData[j][0] == (double)res);
+    printf("label: %lf, res: %d\n", trainingData[j][0], res);
+  }
+  printf("Accuracy: %lf\n", right/(double)minTestPicNum);
+
+
+  //printf("\n%lf\n",(double)bp(&myNet, trainingData, minTestPicNum, stepFactor));
+}
+
+int main()
+{
+  // int epsilon = 0.12;
+  //   printf("%lf", (double)rand()/(double)RAND_MAX);
+  mnistTest();
     return 0;
 }

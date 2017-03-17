@@ -44,8 +44,8 @@ void forward(struct SimpleNet *net, double *input);
 
 void clear(struct SimpleNet *net);
 //void reset(struct SimpleNet *net);
-void backward(struct SimpleNet *net, int, void(*costFuncDet)(struct Vector *, struct Vector *, int));
-void update(struct SimpleNet *net, double stepFactor);
+void backward(struct SimpleNet *net, int, void(*costFuncDet)(struct Vector *, struct Vector *, int), double sf);
+void update(struct SimpleNet *net);
 
 // Activation functions
 double sigmoid(double num);

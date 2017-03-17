@@ -1,5 +1,7 @@
 #include "netdebugger.h"
 #include "simplenet.h"
+#include <stdio.h>
+#include <string.h>
 
 void printPath()
 {
@@ -13,10 +15,33 @@ void printNet(struct SimpleNet *net) {
     printf("Fully Connection Layer %d res:\n", i);
     printVector(&net->fls[i].res);
     putchar('\n');
+
+    printf("Fully Connection Layer %d det:\n", i);
+    printVector(&net->fls[i].det);
+    putchar('\n');
+
     printf("Translation Layer %d res:\n", i);
     printVector(&net->tls[i].res);
     putchar('\n');
+
+    printf("Translation Layer %d det:\n", i);
+    printVector(&net->tls[i].det);
+    putchar('\n');
   }
+}
+
+void writeMat(struct Mat *m, char filename[]) {
+  FILE *f = fopen(filename, "w");//strcat(filename, ".csv")
+  for (int i = 0; i < m->rowNum; i++) {
+    if (m->colNum > 0) {
+      fprintf(f, "%lf", m->data[i][0]);
+      for (int j = 1; j < m->colNum; j++) {
+        fprintf(f, ",%lf", m->data[i][j]);
+      }
+      fprintf(f, "\n");
+    }
+  }
+  fclose(f);
 }
 
 //  void TestLongDouble()

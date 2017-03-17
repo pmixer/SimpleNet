@@ -12,6 +12,8 @@ double * getVecSpace(int size) {
 
 double ** getMatSpace(int inputLayerSize, int outputLayerSize)
 {
+
+	int epsilon = 0.00012;
     double **mat = (double **)malloc(sizeof(double *)*inputLayerSize);
     int rowIndex, colIndex;
     for (rowIndex = 0; rowIndex < inputLayerSize; rowIndex++)
@@ -21,7 +23,7 @@ double ** getMatSpace(int inputLayerSize, int outputLayerSize)
         {
             //Initialization is very important process and I still haven't released the power of statistics
             // mat[rowIndex][colIndex] = ((random() - RAND_MAX/2)*0.01)/(6*RAND_MAX);
-						mat[rowIndex][colIndex] = 0.00001*(double)rand()/(double)RAND_MAX;
+						mat[rowIndex][colIndex] = 0.001*(double)rand()/(double)RAND_MAX;//2*epsilon*(double)rand()/(double)RAND_MAX - epsilon;
             // printf("Got %lf ", mat[rowIndex][colIndex]);
         }
     }
@@ -99,10 +101,12 @@ void vmv(struct Vector *in_vec, struct Mat *mat, struct Vector *out_vec, bool mt
 		}
 }
 
-void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat) {
+void vvm(struct Vector *lvec, struct Vector *rvec, struct Mat *mat, double sf) {
 	for (int i = 0; i < lvec->len; i++) {
 		for (int j = 0; j < rvec->len; j++) {
-			mat->data[i][j] += lvec->data[i]*rvec->data[j];
+			// printf("Before: %lf ", lvec->data[i]);
+			mat->data[i][j] += (-sf)*lvec->data[i]*rvec->data[j];
+			// printf("After: %lf ", rvec->data[j]);
 		}
 	}
 }
