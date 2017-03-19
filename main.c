@@ -24,19 +24,19 @@ void quadCostFunc(Vector *output, Vector *det, int label) {
 void mnistTest() {
   // Prepare data
   double **trainingData, **testData;
-  int minTestPicNum = 10;
+  int minTestPicNum = 10;//42000;
   readInMiniData(&trainingData, minTestPicNum);
 
   // Init the network
   SimpleNet myNet;
-  int layerNum = 2;
+  int layerNum = 3;
   int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
-  layerSizes[0] = 724, layerSizes[1] = 10; //0, layerSizes[2] = 10;
+  layerSizes[0] = 724, layerSizes[1] = 100, layerSizes[2] = 10;
   initNetWork(&myNet, layerNum, layerSizes);
 
   // Params for learning
-  double stepFactor = 0.00001;
-  int maxIteration = 50; //Epoch num, as they always set it to 50 in Currennt
+  double stepFactor = 0.1;
+  int maxIteration = 100; //Epoch num, as they always set it to 50 in Currennt
 
   // Training by backprpagation
   for (int i = 0; i < maxIteration; i++) {
@@ -48,14 +48,14 @@ void mnistTest() {
     }
     update(&myNet);
   }
-
+  // writeMat(&myNet.fls[0].weightDet, "fls0");
  // Test overfitting result
   int right = 0;
   for (int j = 0; j < minTestPicNum; j++) {
     forward(&myNet, trainingData[j]+1);
     int res = selectFromOutput(&myNet);
     right += (trainingData[j][0] == (double)res);
-    printf("label: %lf, res: %d\n", trainingData[j][0], res);
+    // printf("label: %lf, res: %d\n", trainingData[j][0], res);
   }
   printf("Accuracy: %lf\n", right/(double)minTestPicNum);
 }

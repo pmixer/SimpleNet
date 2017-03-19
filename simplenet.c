@@ -92,12 +92,6 @@ void backward(SimpleNet *net, int label, void(*costFunDet)(Vector *output, Vecto
   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
   vvm(&(net->inputLayer.input), &(net->fls[li].det), &(net->fls[li].weightDet), -sf);// vector multiple vector to matrix, for weight matrix det
   vplusv(&(net->fls[li].biasDet), &(net->fls[li].det), -sf);
-
-  // writeMat(&(net->fls[li].weightDet), "weightDet");
-  // printVector(&(net->inputLayer.input));
-  // printVector(&(net->fls[li].res));
-  // getchar();
-
 }
 
 void update(SimpleNet *net) {
@@ -159,16 +153,16 @@ int selectFirstBiggest(SimpleNet *net)
     int counter2; // counter2 indicates the code is pasted from another episode
     int maxAt = 0;
     double maxAmongOutput = net->output->data[0];
-    printf("\nSelecting from: ");
+    // printf("\nSelecting from: ");
     for (counter2 = 0; counter2 < net->output->len; counter2++)
     {
-        printf("%lf ", net->output->data[counter2]);
+        // printf("%lf ", net->output->data[counter2]);
         if (net->output->data[counter2] > maxAmongOutput)
         {
             maxAmongOutput = net->output->data[counter2];
             maxAt = counter2;//Or just use maxAt, delete maxAmongOutput
         }
     }
-    printf("\n");
+    // printf("\n");
     return maxAt;
 }

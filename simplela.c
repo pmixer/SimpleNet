@@ -12,7 +12,7 @@ double * getVecSpace(int size) {
 
 double ** getMatSpace(int inputLayerSize, int outputLayerSize)
 {
-	int epsilon = 0.00012;
+	int epsilon = 0.0012;
     double **mat = (double **)malloc(sizeof(double *)*inputLayerSize);
     int rowIndex, colIndex;
     for (rowIndex = 0; rowIndex < inputLayerSize; rowIndex++)
@@ -20,7 +20,7 @@ double ** getMatSpace(int inputLayerSize, int outputLayerSize)
         mat[rowIndex] = (double *)malloc(sizeof(double)*outputLayerSize);
         for (colIndex = 0; colIndex < outputLayerSize; colIndex++)
         {
-			mat[rowIndex][colIndex] = 0.0001*(double)rand()/(double)RAND_MAX - epsilon;
+			mat[rowIndex][colIndex] = 0.001*(double)rand()/(double)RAND_MAX - epsilon;
         }
     }
     return mat;
