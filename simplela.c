@@ -12,7 +12,6 @@ double * getVecSpace(int size) {
 
 double ** getMatSpace(int inputLayerSize, int outputLayerSize)
 {
-
 	int epsilon = 0.00012;
     double **mat = (double **)malloc(sizeof(double *)*inputLayerSize);
     int rowIndex, colIndex;
@@ -21,10 +20,7 @@ double ** getMatSpace(int inputLayerSize, int outputLayerSize)
         mat[rowIndex] = (double *)malloc(sizeof(double)*outputLayerSize);
         for (colIndex = 0; colIndex < outputLayerSize; colIndex++)
         {
-            //Initialization is very important process and I still haven't released the power of statistics
-            // mat[rowIndex][colIndex] = ((random() - RAND_MAX/2)*0.01)/(6*RAND_MAX);
-						mat[rowIndex][colIndex] = 0.001*(double)rand()/(double)RAND_MAX;//2*epsilon*(double)rand()/(double)RAND_MAX - epsilon;
-            // printf("Got %lf ", mat[rowIndex][colIndex]);
+			mat[rowIndex][colIndex] = 0.0001*(double)rand()/(double)RAND_MAX - epsilon;
         }
     }
     return mat;
@@ -66,17 +62,8 @@ void mplusm(Mat *m, Mat *dm, double factor) {
 
 void vmv(Vector *in_vec, Mat *mat, Vector *out_vec, bool mtrans)
 {
-    // Row num is equal to v1 length and column num is equal to v2 length of the given matrix
-	// if ((in_vec->len != mat->rowNum)||(out_vec->len != mat->colNum))
-	// {
-	// 	printf("Runtime error, invalid vector times matrix assigning to another vector\n");
-	// 	printf("vec1 len: %d, matrix size: %d %d, vec2 len: %d\n", in_vec->len, mat->rowNum, mat->colNum, out_vec->len);
-	// 	exit(1);
-	//
-	// }
-
-		// how to be execution efficient and code sufficient?
-		// look at code below
+	// how to be execution efficient and code sufficient?
+	// look at code below
     int counter1, counter2;
 		if (!mtrans) {
 			for (counter1 = 0; counter1 < out_vec->len; counter1++)
@@ -104,9 +91,7 @@ void vmv(Vector *in_vec, Mat *mat, Vector *out_vec, bool mtrans)
 void vvm(Vector *lvec, Vector *rvec, Mat *mat, double sf) {
 	for (int i = 0; i < lvec->len; i++) {
 		for (int j = 0; j < rvec->len; j++) {
-			// printf("Before: %lf ", lvec->data[i]);
-			mat->data[i][j] += (-sf)*lvec->data[i]*rvec->data[j];
-			// printf("After: %lf ", rvec->data[j]);
+			mat->data[i][j] += (sf)*lvec->data[i]*rvec->data[j];
 		}
 	}
 }

@@ -61,6 +61,7 @@ void softmaxBack(Vector *input, Vector *res, Vector *det);
 // Determine which label it belongs to
 int selectFirstBiggest(SimpleNet *net);
 int selectFromOutput(SimpleNet * net);
+int loss(SimpleNet *net, double *data);
 
 // Cost Function
 

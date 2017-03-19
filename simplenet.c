@@ -45,7 +45,10 @@ void initNetWork(SimpleNet *net, int layerNum, int *layerSize)
 
 //FowardPass with sigmoid included
 void forward(SimpleNet *net, double *input) {
-  net->inputLayer.input.data = input;
+  for (int i = 0; i < net->inputLayer.input.len; i++) {
+    net->inputLayer.input.data[i] = input[i];
+  }
+  // net->inputLayer.input.data = input;
 
   vmv(&(net->inputLayer.input), &(net->fls[0].weight), &(net->fls[0].res), false);
   vplusv(&(net->fls[0].res), &(net->fls[0].bias), 1.0);
@@ -59,7 +62,6 @@ void forward(SimpleNet *net, double *input) {
 
   // softmax
   int lli = net->hiddenLayerNum-1;// last layer index
-
   softmax(&net->fls[lli].res, &net->tls[lli].res);
 }
 
@@ -67,7 +69,6 @@ void clear(SimpleNet *net) {
   for (int i = 0; i < net->hiddenLayerNum; i++) {
     clearVector(&(net->fls[i].biasDet));
     clearMat(&(net->fls[i].weightDet));
-    clearVector(&(net->tls[i].det));
   }
 }
 
@@ -82,26 +83,23 @@ void backward(SimpleNet *net, int label, void(*costFunDet)(Vector *output, Vecto
     // consequently, softmaxBack is same as acFunBack using sigmoid
     softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
     // To update weight det and bias det
-    vvm(&(net->tls[li-1].res), &(net->fls[li].det), &(net->fls[li].weightDet), sf);// vector multiple vector to matrix, for weight matrix det
-    //vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
+    vvm(&(net->tls[li-1].res), &(net->fls[li].det), &(net->fls[li].weightDet), -sf);// vector multiple vector to matrix, for weight matrix det
     vplusv(&(net->fls[li].biasDet), &(net->fls[li].det), -sf);
     vmv(&(net->fls[li].det), &(net->fls[li].weight) ,&(net->tls[li-1].det), true);
   }
+
   // last hidden layer, now li  = 0
-
-
   softmaxBack(&(net->tls[li].det), &(net->tls[li].res), &(net->fls[li].det));
-  vvm(&(net->inputLayer.input), &(net->fls[li].det), &(net->fls[li].weightDet), sf);// vector multiple vector to matrix, for weight matrix det
-  vcpv(&(net->fls[li].biasDet), &(net->fls[li].det));// vector copy another vector's value, for bias det
+  vvm(&(net->inputLayer.input), &(net->fls[li].det), &(net->fls[li].weightDet), -sf);// vector multiple vector to matrix, for weight matrix det
+  vplusv(&(net->fls[li].biasDet), &(net->fls[li].det), -sf);
 
-  writeMat(&(net->fls[li].weightDet), "weightDet");
-    printVector(&(net->fls[li].det));
-    printVector(&(net->fls[li].res));
-    getchar();
+  // writeMat(&(net->fls[li].weightDet), "weightDet");
+  // printVector(&(net->inputLayer.input));
+  // printVector(&(net->fls[li].res));
+  // getchar();
 
 }
 
-// update using a step factor
 void update(SimpleNet *net) {
   for (int i = 0; i < net->hiddenLayerNum; i++) {
     mplusm(&(net->fls[i].weight), &(net->fls[i].weightDet), 1.0);
@@ -124,7 +122,7 @@ void softmax(Vector *input, Vector *output) {
 
 void softmaxBack(Vector *inputdet, Vector *inputres, Vector *det) {
   for (int i = 0; i < inputdet->len; i++) {
-    det->data[i] += inputdet->data[i]*sigmoidDet(inputres->data[i]);
+    det->data[i] = inputdet->data[i]*sigmoidDet(inputres->data[i]);
   }
 }
 
