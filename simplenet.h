@@ -38,13 +38,9 @@ void initNetWork(SimpleNet *net, int layerNum, int *layerSize);
 
 // Forward and compute the result as res value in Softmax/last layer
 void forward(SimpleNet *net, double *input);
-
-// Back propogation, directly update weights and bias,
-// rigid and risky but effortless for no parallel computing needed
-// and if SGD required, just use accumulative det array and add det matrix
-
+double l2loss(SimpleNet *net, int label);
 void clear(SimpleNet *net);
-//void reset(SimpleNet *net);
+// Backward, full batch
 void backward(SimpleNet *net, int, void(*costFuncDet)(Vector *, Vector *, int), double sf);
 void update(SimpleNet *net);
 

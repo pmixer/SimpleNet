@@ -101,6 +101,19 @@ void update(SimpleNet *net) {
   }
 }
 
+double l2loss(SimpleNet *net, int label) {
+  double loss = 0, delta;
+  for (int i = 0; i < net->output->len; i++) {
+    if (i == label) {
+      delta = (net->output->data[i] - 1);
+    }else {
+      delta = net->output->data[i];
+    }
+    loss += delta*delta;
+  }
+  return loss;
+}
+
 void softmax(Vector *input, Vector *output) {
   double sum = 0;
   for (int i = 0; i < input->len; i++) {

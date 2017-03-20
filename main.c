@@ -24,40 +24,61 @@ void quadCostFunc(Vector *output, Vector *det, int label) {
 void mnistTest() {
   // Prepare data
   double **trainingData, **testData;
-  int minTestPicNum = 10;//42000;
-  readInMiniData(&trainingData, minTestPicNum);
+  int trainingPicNum = 100;
+  //readInMiniData(&trainingData, trainingPicNum);
+  readInData(&trainingData, &testData);
 
   // Init the network
   SimpleNet myNet;
   int layerNum = 3;
   int *layerSizes = (int *)malloc(sizeof(int)*layerNum);
-  layerSizes[0] = 724, layerSizes[1] = 100, layerSizes[2] = 10;
+  layerSizes[0] = 724, layerSizes[1] = 88, layerSizes[2] = 10;
   initNetWork(&myNet, layerNum, layerSizes);
 
   // Params for learning
-  double stepFactor = 0.1;
-  int maxIteration = 100; //Epoch num, as they always set it to 50 in Currennt
+  double stepFactor = 0.001;
+  int maxIteration = 1000; //Epoch num, as they always set it to 50 in Currennt
 
   // Training by backprpagation
   for (int i = 0; i < maxIteration; i++) {
     clear(&myNet);
-    for (int j = 0; j < minTestPicNum; j++) {
+    double loss = 0;
+    for (int j = 0; j < trainingPicNum; j++) {
       int di = j; //data index
       forward(&myNet, trainingData[di]+1);
+      loss += l2loss(&myNet, (int)trainingData[di][0]);
       backward(&myNet, trainingData[di][0], &quadCostFunc, stepFactor);
     }
+    loss /= trainingPicNum;
+    printf("L2 Loss: %lf\n", loss);
     update(&myNet);
   }
-  // writeMat(&myNet.fls[0].weightDet, "fls0");
+  // saveMat(&myNet.fls[0].weightDet, "fls0");
  // Test overfitting result
   int right = 0;
-  for (int j = 0; j < minTestPicNum; j++) {
+  for (int j = 0; j < trainingPicNum; j++) {
     forward(&myNet, trainingData[j]+1);
     int res = selectFromOutput(&myNet);
     right += (trainingData[j][0] == (double)res);
-    // printf("label: %lf, res: %d\n", trainingData[j][0], res);
   }
-  printf("Accuracy: %lf\n", right/(double)minTestPicNum);
+  printf("Accuracy: %lf\n", right/(double)trainingPicNum);
+
+  // Save weight
+  saveMat(&myNet.fls[0].weight, "fc0weight");
+  saveMat(&myNet.fls[1].weight, "fc1weight");
+  saveVector(&myNet.fls[0].bias, "fc0bias");
+  saveVector(&myNet.fls[1].bias, "fc1bias");
+
+  // Predict
+  // int testPicNum = 28000;
+  // FILE *res = fopen("prediction.csv", "w");
+  // fprintf(res, "ImageId,Label\n");
+  // for (int j = 0; j < testPicNum; j++) {
+  //   forward(&myNet, testData[j]);
+  //   int label = selectFromOutput(&myNet);
+  //   fprintf(res, "%d,%d\n", j+1, label);
+  // }
+  // fclose(res);
 }
 
 int main()

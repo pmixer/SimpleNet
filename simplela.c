@@ -103,3 +103,61 @@ void printVector(Vector *vec) {
 	}
 	printf("\n");
 }
+
+void saveVector(Vector *v, char filename[]) {
+	FILE *f = fopen(filename, "w");//strcat(filename, ".csv")
+	fprintf(f, "%d\n", v->len);
+	if (v->len > 0) {
+		fprintf(f, "%lf", v->data[0]);
+	}
+  for (int i = 1; i < v->len; i++) {
+      fprintf(f, ",%lf", v->data[i]);
+  }
+	fprintf(f, "\n");
+  fclose(f);
+}
+
+void loadVector(Vector *v, char filename[]) {
+	FILE *f = fopen(filename, "r");//strcat(filename, ".csv")
+	int tl;// tmp length
+	fscanf(f, "%d\n", &tl);
+	if (v->len > 0) {
+		fscanf(f, "%lf", &v->data[0]);
+	}
+  for (int i = 1; i < v->len; i++) {
+      fscanf(f, ",%lf", &v->data[i]);
+  }
+	fscanf(f, "\n");
+  fclose(f);
+}
+
+void saveMat(Mat *m, char filename[]) {
+  FILE *f = fopen(filename, "w");//strcat(filename, ".csv")
+	fprintf(f, "%d,%d\n", m->rowNum, m->colNum);
+  for (int i = 0; i < m->rowNum; i++) {
+    if (m->colNum > 0) {
+      fprintf(f, "%lf", m->data[i][0]);
+      for (int j = 1; j < m->colNum; j++) {
+        fprintf(f, ",%lf", m->data[i][j]);
+      }
+      fprintf(f, "\n");
+    }
+  }
+  fclose(f);
+}
+
+void loadMat(Mat *m, char filename[]) {
+	FILE *f = fopen(filename, "r");//strcat(filename, ".csv")
+	int tmpRN, tmpCN;// RN: row number, CN: column number
+	fscanf(f, "%d,%d\n", &tmpRN, &tmpCN);
+	for (int i = 0; i < m->rowNum; i++) {
+		if (m->colNum > 0) {
+			fscanf(f, "%lf", &m->data[i][0]);
+			for (int j = 1; j < m->colNum; j++) {
+				fscanf(f, ",%lf", &m->data[i][j]);
+			}
+			fscanf(f, "\n");
+		}
+	}
+	fclose(f);
+}

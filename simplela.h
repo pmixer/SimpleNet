@@ -29,4 +29,8 @@ void mplusm(Mat *m, Mat *dm, double factor);
 void vmv(Vector *in_vec, Mat *mat, Vector *out_vec, bool mtrans);
 void vvm(Vector *lvec, Vector *rvec, Mat *mat, double sf);
 void printVector(Vector *vec);
+void saveVector(Vector *v, char filename[]);
+void loadVector(Vector *v, char filename[]);
+void saveMat(Mat* m, char filename[]);
+void loadMat(Mat *m, char filename[]);
 #endif

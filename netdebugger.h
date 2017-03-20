@@ -7,8 +7,6 @@
 // Print current path
 void printPath();
 
-void writeMat(Mat* m, char filename[]);
-
 // Print inner state of network
 void printNet(SimpleNet *net);
 

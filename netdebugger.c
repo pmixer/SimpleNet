@@ -30,20 +30,6 @@ void printNet(SimpleNet *net) {
   }
 }
 
-void writeMat(Mat *m, char filename[]) {
-  FILE *f = fopen(filename, "w");//strcat(filename, ".csv")
-  for (int i = 0; i < m->rowNum; i++) {
-    if (m->colNum > 0) {
-      fprintf(f, "%lf", m->data[i][0]);
-      for (int j = 1; j < m->colNum; j++) {
-        fprintf(f, ",%lf", m->data[i][j]);
-      }
-      fprintf(f, "\n");
-    }
-  }
-  fclose(f);
-}
-
 //  void TestLongDouble()
 //  {
 //      /*

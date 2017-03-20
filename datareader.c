@@ -13,7 +13,7 @@ void readInData(double ***trainingData, double ***testData)
 
 void readInMiniData(double ***trainingData, int minTestPicNum)
 {
-    char trainingDataPath[100] = "./train.csv";
+    char trainingDataPath[100] = "C:/emag/data/kaggle/minst/train.csv";
     int trainingPicNum = minTestPicNum;
     (*trainingData) = getData(trainingDataPath,trainingPicNum,785);
 }
@@ -22,6 +22,7 @@ double ** getData(char *path, int rowNum, int colNum) //bool isTrainingData)
 {
     FILE* dataFile = fopen(path, "r");
     if (dataFile == NULL) {
+        printf("Check if file path is correct");
         exit(1);
     }
     char head[10000];
