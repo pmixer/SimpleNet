@@ -24,7 +24,7 @@ void quadCostFunc(Vector *output, Vector *det, int label) {
 void mnistTest() {
   // Prepare data
   double **trainingData, **testData;
-  int trainingPicNum = 100;
+  int trainingPicNum = 42000;
   //readInMiniData(&trainingData, trainingPicNum);
   readInData(&trainingData, &testData);
 
@@ -35,9 +35,15 @@ void mnistTest() {
   layerSizes[0] = 724, layerSizes[1] = 88, layerSizes[2] = 10;
   initNetWork(&myNet, layerNum, layerSizes);
 
+  // Load pretrained weights
+  loadMat(&myNet.fls[0].weight, "fc0weight");
+  loadMat(&myNet.fls[1].weight, "fc1weight");
+  loadVector(&myNet.fls[0].bias, "fc0bias");
+  loadVector(&myNet.fls[1].bias, "fc1bias");
+
   // Params for learning
-  double stepFactor = 0.001;
-  int maxIteration = 1000; //Epoch num, as they always set it to 50 in Currennt
+  double stepFactor = 0.00000005;
+  int maxIteration = 233; //Epoch num, as they always set it to 50 in Currennt
 
   // Training by backprpagation
   for (int i = 0; i < maxIteration; i++) {
@@ -70,15 +76,15 @@ void mnistTest() {
   saveVector(&myNet.fls[1].bias, "fc1bias");
 
   // Predict
-  // int testPicNum = 28000;
-  // FILE *res = fopen("prediction.csv", "w");
-  // fprintf(res, "ImageId,Label\n");
-  // for (int j = 0; j < testPicNum; j++) {
-  //   forward(&myNet, testData[j]);
-  //   int label = selectFromOutput(&myNet);
-  //   fprintf(res, "%d,%d\n", j+1, label);
-  // }
-  // fclose(res);
+  int testPicNum = 28000;
+  FILE *res = fopen("prediction.csv", "w");
+  fprintf(res, "ImageId,Label\n");
+  for (int j = 0; j < testPicNum; j++) {
+    forward(&myNet, testData[j]);
+    int label = selectFromOutput(&myNet);
+    fprintf(res, "%d,%d\n", j+1, label);
+  }
+  fclose(res);
 }
 
 int main()
