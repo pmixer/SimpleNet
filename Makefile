@@ -1,2 +1,4 @@
+CC=gcc
+
 main:
-	cl main.c datareader.c simplenet.c simplela.c netdebugger.c
+	$(CC) main.c datareader.c simplenet.c simplela.c netdebugger.c -o simplenet

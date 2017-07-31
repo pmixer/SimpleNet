@@ -3,8 +3,8 @@
 
 void readInData(double ***trainingData, double ***testData)
 {
-    char trainingDataPath[100] = "C:/emag/data/kaggle/minst/train.csv";
-    char testDataPath[100] = "C:/emag/data/kaggle/minst/test.csv";
+    char trainingDataPath[100] = "data/train.csv";//"C:/emag/data/kaggle/minst/train.csv";
+    char testDataPath[100] = "data/test.csv";//"C:/emag/data/kaggle/minst/test.csv";
     int trainingPicNum = 42000;
     int testPicNum = 28000;
     (*trainingData) = getData(trainingDataPath,trainingPicNum,785);
@@ -13,7 +13,7 @@ void readInData(double ***trainingData, double ***testData)
 
 void readInMiniData(double ***trainingData, int minTestPicNum)
 {
-    char trainingDataPath[100] = "C:/emag/data/kaggle/minst/train.csv";
+    char trainingDataPath[100] = "data/train.csv";//"C:/emag/data/kaggle/minst/train.csv";
     int trainingPicNum = minTestPicNum;
     (*trainingData) = getData(trainingDataPath,trainingPicNum,785);
 }

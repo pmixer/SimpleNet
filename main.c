@@ -36,10 +36,10 @@ void mnistTest() {
   initNetWork(&myNet, layerNum, layerSizes);
 
   // Load pretrained weights
-  loadMat(&myNet.fls[0].weight, "fc0weight");
-  loadMat(&myNet.fls[1].weight, "fc1weight");
-  loadVector(&myNet.fls[0].bias, "fc0bias");
-  loadVector(&myNet.fls[1].bias, "fc1bias");
+  //loadMat(&myNet.fls[0].weight, "fc0weight");
+  //loadMat(&myNet.fls[1].weight, "fc1weight");
+  //loadVector(&myNet.fls[0].bias, "fc0bias");
+  //loadVector(&myNet.fls[1].bias, "fc1bias");
 
   // Params for learning
   double stepFactor = 0.00000005;
